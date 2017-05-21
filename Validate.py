@@ -96,7 +96,7 @@ def countTemplates():
     countMemes = []
     totalTemplates = 0
     # Count the memes, metamemes and restrictions
-    for templateID in Graph.templateRepository.templates.keys():
+    for templateID in list(Graph.templateRepository.templates.keys()):
         template = Graph.templateRepository.templates[templateID]
         totalTemplates = totalTemplates + 1
         
@@ -140,7 +140,7 @@ def validateMemes():
     totalResults = []
     totalValid = 0
     
-    for moduleID in Graph.templateRepository.modules.keys():
+    for moduleID in list(Graph.templateRepository.modules.keys()):
         module = template = Graph.templateRepository.modules[moduleID]
         #print(module)
         
@@ -235,7 +235,7 @@ def publishResults(validationTime, counts, validationReportMeme, css = "", outpu
         ovTableHeaderRow.appendChild(cell)
     overviewTable.appendChild(ovTableHeaderRow)
     
-    for overviewLineKey in counts.keys():
+    for overviewLineKey in list(counts.keys()):
         if overviewLineKey != "Templates":
             count = counts[overviewLineKey]
             if (overviewLineKey == "Memes") or (overviewLineKey == "MetaMemes"):
@@ -505,7 +505,7 @@ def publishResults(validationTime, counts, validationReportMeme, css = "", outpu
     mmRrowsPerColumn = numberOfMetaMemes//mmNumberOfColumns + 1
     repoLists["MetaMemes"] = [mmNumberOfColumns, mmRrowsPerColumn, counts["MetaMemes"]]
 
-    for repoListKey in repoLists.keys():
+    for repoListKey in list(repoLists.keys()):
         repoListRow = repoLists[repoListKey]
 
         repoTable = doc.createElement("table")
@@ -652,7 +652,7 @@ if __name__ == "__main__":
         elif args.logl == "warning":
             pass
         else:
-            print("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl)
+            print(("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl))
             sys.exit()
     
     nRepoCount = 1
@@ -669,9 +669,9 @@ if __name__ == "__main__":
             pass
         elif (args.dbtype == 'sqlite') or (args.dbtype == 'mssql') or (args.dbtype == 'hana'):
             persistenceType = args.dbtype
-            print("\n  -- using persistence type %s" %args.dbtype)
+            print(("\n  -- using persistence type %s" %args.dbtype))
         else:
-            print("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl)
+            print(("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl))
             sys.exit()
             
     dbConnectionString = None
@@ -683,7 +683,7 @@ if __name__ == "__main__":
                 dbConnectionString = 'memory'
                 print("\n  -- Using sqlite persistence with connection = :memory:")
             else:
-                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                print(("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType))
                 sys.exit()
         elif args.dbtcon == 'memory':
             if persistenceType is None:
@@ -693,18 +693,18 @@ if __name__ == "__main__":
                 dbConnectionString = args.dbtcon
                 print("\n  -- Using sqlite persistence with connection = :memory:")
             else:
-                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                print(("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType))
                 sys.exit()
         else:
             dbConnectionString = args.dbtcon
             if persistenceType == 'sqlite':
                 if dbConnectionString.endswith(".sqlite"):
-                    print("\n  -- Using sqlite persistence with file %s" %dbConnectionString)
+                    print(("\n  -- Using sqlite persistence with file %s" %dbConnectionString))
                 else:
-                    print("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString)
+                    print(("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString))
                     sys.exit()
             else:
-                print("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon))
+                print(("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon)))
 
  
     additionalRepoToTest = []
@@ -712,8 +712,8 @@ if __name__ == "__main__":
         for additionalRepo in args.repo:            
             additionalRepoToTest.append(additionalRepo)  
             nRepoCount = nRepoCount + 1
-            print("\n  -- repo: %s" %additionalRepo)
-    print("\n  %s repositories (including Memetic core repo) are being validated" %nRepoCount)
+            print(("\n  -- repo: %s" %additionalRepo))
+    print(("\n  %s repositories (including Memetic core repo) are being validated" %nRepoCount))
 
   
     css = Fileutils.defaultCSS()

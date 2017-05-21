@@ -470,9 +470,9 @@ if __name__ == "__main__":
                         if localResult is not None:
                             #if we've not thrown an Empty exception, then we have our result and it is time to collect that and shut the child proccess down
                             performanceResults.addResult(pCon[1], int(cScaleFactor), localResult['validationTime'], localResult['entityCount'])
-                            print("...persistence profile %s, scale factor %s has returned results with t= %s" %(pCon[1], cScaleFactor, localResult['validationTime']))
+                            print(("...persistence profile %s, scale factor %s has returned results with t= %s" %(pCon[1], cScaleFactor, localResult['validationTime'])))
                         else:
-                            print("...persistence profile %s, scale factor %s failed!" %(pCon[1], cScaleFactor))
+                            print(("...persistence profile %s, scale factor %s failed!" %(pCon[1], cScaleFactor)))
                     except queue.Empty:
                         time.sleep(10.0)
                     except Exception as e:

@@ -45,8 +45,8 @@ class ConditionTrueOrFalse(Graphyne.Scripting.StateEventScript):
         returnValue = False
         try:
             try:
-                passedParam = argumentMap['runtimeVariables'][u"TestValue"]
-                if passedParam.upper() == u"TRUE":
+                passedParam = argumentMap['runtimeVariables']["TestValue"]
+                if passedParam.upper() == "TRUE":
                     returnValue = True
             except:
                 pass

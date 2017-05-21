@@ -118,7 +118,7 @@ class Queues(object):
         
     def syndicate(self, streamData):
         #syndicate all data to the load queues
-        for loadQKey in self.__dict__.keys(): 
+        for loadQKey in list(self.__dict__.keys()): 
             try:
                 loadQ = self.__getattribute__(loadQKey)
                 loadQ.put(streamData)
@@ -731,7 +731,7 @@ class MetaMeme(object):
                 logQ.put( [logType , logLevel.WARNING , method , "Failed to retrieve property %s from member metameme %s.  Traceback = %s" %(memeberMMProp, memberMMName, e)])
         else:
             #logQ.put( [logType , logLevel.DEBUG , method , "Property is supposed to be in Metameme itself (and not a member metameme).  Trying to resolve"])
-            for propertyKey in self.properties.keys():
+            for propertyKey in list(self.properties.keys()):
                 templateProperty = self.properties[propertyKey]
                 if templateProperty.name == propertyName:
                     #logQ.put( [logType , logLevel.DEBUG , method , "Metameme property %s == %s" %(property.name, splitName[2])])
@@ -851,7 +851,7 @@ class MetaMeme(object):
         self.aliases.extend(toBeMerged.aliases)
         self.aliases = filterListDuplicates(self.aliases)         
                 
-        for propertyKey in toBeMerged.properties.keys():
+        for propertyKey in list(toBeMerged.properties.keys()):
             try:
                 # do nothing if we actually find a key with the same name in the merge metameme
                 # if A extends B.  Any property declarations of the same name override B's
@@ -861,7 +861,7 @@ class MetaMeme(object):
                 mergeProp = toBeMerged.properties[propertyKey]
                 self.properties[propertyKey] = mergeProp
                 
-        for memberMetaMemeKey in toBeMerged.memberMetaMemes.keys():
+        for memberMetaMemeKey in list(toBeMerged.memberMetaMemes.keys()):
             try:
                 # do nothing if we actually find a key with the same name in the merge metameme
                 # if A extends B.  Any member declarations of the same name override B's
@@ -890,7 +890,7 @@ class MetaMeme(object):
         
         #first iterate over the member metamemes and create a little occurrence tracker
         #After reviewing membership, we'll report any violated cardinality in the log.
-        for memeberMetaMemeKey in self.memberMetaMemes.keys():
+        for memeberMetaMemeKey in list(self.memberMetaMemes.keys()):
             memeberMetaMeme = self.memberMetaMemes[memeberMetaMemeKey]
             
             # CardinalityList is
@@ -902,7 +902,7 @@ class MetaMeme(object):
         #per distinct membermeme in the meme being validated, build the cardinality lists
         #    If allDesctinctMembers flag is set, there may each member must be unique
         memberMMList = []
-        for memeberMemePath in memberDict.keys():
+        for memeberMemePath in list(memberDict.keys()):
             memeberMemeOcc = int(memberDict[memeberMemePath])
             try:
                 # first get the member meme that the dict refers to
@@ -967,7 +967,7 @@ class MetaMeme(object):
         #    On thre first pass, there are multiple members of the same metameme type, it won't be possible
         #    to properly validate the cardinality.  By waiting making a second pass, we can be sure that
         #    the values of the cardinality lists are aggregated on a per metameme, rather than meme basis
-        for memeberMemePath in memberDict.keys():
+        for memeberMemePath in list(memberDict.keys()):
             try:
                 memberMeme = templateRepository.resolveTemplate(memePath, memeberMemePath)
                 #naturally, that meme should have a registered metameme
@@ -999,7 +999,7 @@ class MetaMeme(object):
         # If self is a switch, then memes constructed from it it may only have 0 or 1 member types.
         if self.isSwitch == True:
             usedMMList = []
-            for memeberMemePath in memberDict.keys():
+            for memeberMemePath in list(memberDict.keys()):
                 memberMeme = templateRepository.resolveTemplate(memePath, memeberMemePath)
                 member = memberMeme.getParentMetaMeme()
                 usedMMList.append(member.path.fullTemplatePath)
@@ -1016,7 +1016,7 @@ class MetaMeme(object):
         # Check to make sure that the total member count per type falls within the cardinality
         #  If self is a switch and the meme has only one member, we still need to ensure that type fits the cardinality
         if (self.isSwitch == False) or (numberOfTypes == 0):     
-            for memberPath in memberMetaMemeCount.keys():
+            for memberPath in list(memberMetaMemeCount.keys()):
                 cardinalityList = memberMetaMemeCount[memberPath]
                 if self.isSwitch == False:
                     if cardinalityList[2] > cardinalityList[1]:
@@ -1735,7 +1735,7 @@ class SourceMeme(object):
             #Step 1
             partitionSequence = '::'
             traverseCountSortedReferences = {}
-            for implicitReferenceKey in self.implicitReferences.keys():
+            for implicitReferenceKey in list(self.implicitReferences.keys()):
                 splitMetaMemePath = []
                 count = 0
                 implicitReferencePath = self.implicitReferences[implicitReferenceKey]
@@ -1788,7 +1788,7 @@ class SourceMeme(object):
                             if sourceMeme.metaMeme.isImplicit == True:
                                 if (sourceMeme.metaMeme.path.fullTemplatePath == nextMetaMeme):
                                     #'inflate' the implicit meme reerences on the clild, but only if it is a member of self
-                                    for traverseNodeCandidate in self.memberMemes.keys():
+                                    for traverseNodeCandidate in list(self.memberMemes.keys()):
                                         '''
                                             There is potential for a bug here.  We can't guarantee that traverseNodeCandidate uses the full template path, instead of its localName.
                                             Therefore we have to check against both.  BUT... if self.memberMemes has two or more members with the same localName, but coming from
@@ -1918,7 +1918,7 @@ class SourceMeme(object):
         validationResults = []
         enhancesList = []
         
-        for enhancesListKey in self.enhances.keys():
+        for enhancesListKey in list(self.enhances.keys()):
             enhancesList.append(enhancesListKey)
 
         #debug
@@ -2055,7 +2055,7 @@ class Meme(object):
             #Meme members are stored in unresolved form.  When validating, we'll have to pass the full template paths
             resolvedMembers = {}
             unresolvedMember = False
-            for unresolvedMemberMeme in self.memberMemes.keys():
+            for unresolvedMemberMeme in list(self.memberMemes.keys()):
                 memeberMemeOcc = self.memberMemes[unresolvedMemberMeme][0]
                 try:
                     resolvedMemberMetaMeme = templateRepository.resolveTemplate(self.path, unresolvedMemberMeme)
@@ -2072,7 +2072,7 @@ class Meme(object):
             errorReport.extend(membersValidReport[1])
             
             # now make sure that all of the members are also valid
-            for resolvedMemberMemeKey in resolvedMembers.keys():
+            for resolvedMemberMemeKey in list(resolvedMembers.keys()):
                 try:
                     resolvedMemberMeme = templateRepository.resolveTemplateAbsolutely(resolvedMemberMemeKey)
                     if resolvedMemberMemeKey not in memberExcludeList:
@@ -2119,7 +2119,7 @@ class Meme(object):
             propertiesValid = True
             propertyErrors = []
             # Validate the properties in the meme against their metamemes
-            for propertyName in self.properties.keys():
+            for propertyName in list(self.properties.keys()):
                 templateProperty = self.properties[propertyName]
                 propertyValid = templateProperty.validate(self.path.fullTemplatePath)
                 if propertyValid != True:
@@ -2747,7 +2747,7 @@ class Entity(object):
         self.tags = filterListDuplicates(self.tags)
 
         if noMembers == False:
-            for memberMemeKey in parentMeme.memberMemes.keys():
+            for memberMemeKey in list(parentMeme.memberMemes.keys()):
                 occurs = parentMeme.memberMemes[memberMemeKey][0]  #memermeme is a tuple with coocurence count at position 0 and linkType at position 1
                 lnkTyp = parentMeme.memberMemes[memberMemeKey][1]
                 if lnkTyp == 1:
@@ -2776,7 +2776,7 @@ class Entity(object):
                         break
         
         if restore == False:
-            for memePropKey in parentMeme.properties.keys():
+            for memePropKey in list(parentMeme.properties.keys()):
                 memeProperty = parentMeme.properties[memePropKey]
                 
                 try:
@@ -2809,7 +2809,7 @@ class Entity(object):
         #method = moduleName + '.' +  self.className + '.revertPropertyValues'
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
 
-        for propertyKey in self.properties.keys():
+        for propertyKey in list(self.properties.keys()):
             prop = self.properties[propertyKey]
             if prop.memePath is not None:
                 meme = templateRepository.resolveTemplateAbsolutely(self.memePath.fullTemplatePath)
@@ -2855,7 +2855,7 @@ class Entity(object):
         #logQ.put( [logType , logLevel.DEBUG , method , "entering"])
         
         deleteList = []
-        for propertyKey in self.properties.keys():
+        for propertyKey in list(self.properties.keys()):
             templateProperty = self.properties[propertyKey]
             if templateProperty.memePath is None:
                 #if it has no memePath, then it is a custom property
@@ -3003,7 +3003,7 @@ class Entity(object):
         
         #buildClusterMemberMetadata returns the UUIDs as strings, because UUIDs can't be used for indexing dicts.
         #  This method returns UUID objects however
-        returnMembersStrings = clusterMetaData.keys()
+        returnMembersStrings = list(clusterMetaData.keys())
         returnMembers = []
         for returnMembersString in returnMembersStrings:
             idAsUUID = uuid.UUID(returnMembersString)
@@ -3384,7 +3384,7 @@ class Entity(object):
                             stripper[valueElement] = valueElement
                         del stripper[partitionSequence]
                         value = []
-                        for stripperVal in stripper.keys():
+                        for stripperVal in list(stripper.keys()):
                             value.append(stripperVal)
                     elif type(value) == type(unicodeString):
                         partitionSequence = ','
@@ -3394,7 +3394,7 @@ class Entity(object):
                             stripper[valueElement] = valueElement
                         del stripper[partitionSequence]
                         value = []
-                        for stripperVal in stripper.keys():
+                        for stripperVal in list(stripper.keys()):
                             value.append(stripperVal)
                 except: pass # propValue is not a string
                 for val in value:
@@ -5254,7 +5254,7 @@ class getCluster(object):
                         #We add the node data into a dict, to ensure that each node comes up exactly once
                         nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
                         nodesDict[targetID] = nodeData
-                    for nodesDictKey in nodesDict.keys():
+                    for nodesDictKey in list(nodesDict.keys()):
                         nodes.append(nodesDict[nodesDictKey])
                 except Exception as e:
                     raise e                
@@ -5320,7 +5320,7 @@ class getClusterJSON(object):
                         #We add the node data into a dict, to ensure that each node comes up exactly once
                         nodeData = {"id": targetID, "meme": bigListEntry[2], "metaMeme": bigListEntry[3]}
                         nodesDict[targetID] = nodeData
-                    for nodesDictKey in nodesDict.keys():
+                    for nodesDictKey in list(nodesDict.keys()):
                         nodes.append(nodesDict[nodesDictKey])
                 except Exception as e:
                     raise e                
@@ -5894,10 +5894,10 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
     metamemes = []
     sourceMemes = []
     memes = []
-    for packagePath in objectMap.keys():
+    for packagePath in list(objectMap.keys()):
         try:
             fileData = objectMap[packagePath]
-            for fileStream in fileData.keys():
+            for fileStream in list(fileData.keys()):
                 codepage = fileData[fileStream]
                 toBeIndexed = [fileStream, codepage, packagePath]
     
@@ -5928,10 +5928,10 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
 
         
     #Repeat for metamemes
-    for packagePath in objectMap.keys(): 
+    for packagePath in list(objectMap.keys()): 
         try:
             fileData = objectMap[packagePath]
-            for fileStream in fileData.keys():
+            for fileStream in list(fileData.keys()):
                 codepage = fileData[fileStream]
                 toBeIndexed = [fileStream, codepage, packagePath]
             #logQ.put( [logType , logLevel.DEBUG , method , "making pass %s on metameme load queue" %(nth)])
@@ -6079,10 +6079,10 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
 
 
     # Load the memes
-    for packagePath in objectMap.keys():
+    for packagePath in list(objectMap.keys()):
         try:
             fileData = objectMap[packagePath]
-            for fileStream in fileData.keys():
+            for fileStream in list(fileData.keys()):
                 codepage = fileData[fileStream]
                 toBeIndexed = [fileStream, codepage, packagePath]                
             #logQ.put( [logType , logLevel.DEBUG , method , "making pass %s on meme load queue" %(nth)])
@@ -6164,7 +6164,7 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
     #    This allows us to finally determine which ones should be subatomic
     for sourceMeme in memes:
         memeToBeUpdated = templateRepository.templates[sourceMeme.path.fullTemplatePath]
-        for memberMemeKey in memeToBeUpdated.memberMemes.keys():
+        for memberMemeKey in list(memeToBeUpdated.memberMemes.keys()):
             occurs = memeToBeUpdated.memberMemes[memberMemeKey][0]  #memermeme is a tuple with coocurence count at position 0 and linkType at position 1
             sourceMetaMeme = templateRepository.templates[memeToBeUpdated.metaMeme]
             try:
@@ -6211,10 +6211,10 @@ def startDB(repoLocations=[], flaggedPersistenceType=None , persistenceArg=None,
                     entityID = meme.getEntityFromMeme()
                 except Exception as e:
                     logQ.put( [logType , logLevel.WARNING , method ,"Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e)])
-                    print("Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e))                        
+                    print(("Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e)))                        
         except Exception as e:
             logQ.put( [logType , logLevel.WARNING , method ,"Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e)])
-            print("Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e))
+            print(("Meme %s is a singleton, but can't be instantiated.  Traceback = %s" %(meme.path.fullTemplatePath, e)))
             #try:
                 #entityID = meme.getEntityFromMeme()
                 #singletonEntityList.append(entityID)
@@ -6711,7 +6711,7 @@ def getMemesFromFile(dbConnectionString, xmlData, codePage, modulePath):
                 #Todo
                 #fill in the properties from the table
                 if isImplicitMeme is True:
-                    for implicitPropertyID in metaMeme.implicitMemeMasterData.properties.keys():
+                    for implicitPropertyID in list(metaMeme.implicitMemeMasterData.properties.keys()):
                         implicitPropertyColumn = metaMeme.implicitMemeMasterData.properties[implicitPropertyID]
                         #SELECT * FROM Customers WHERE Country='Mexico';
                         #Should return exactly one row

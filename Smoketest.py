@@ -105,7 +105,7 @@ def testMetaMemeProperty():
             mmToTest = Graph.templateRepository.templates[stringArray[0]]
             props = mmToTest.properties
             Graph.logQ.put( [logType , logLevel.DEBUG , method , "testing metameme %s, props = %s" %(mmToTest.path.fullTemplatePath, props)])
-            for testKey in testArgumentMap.keys():
+            for testKey in list(testArgumentMap.keys()):
                 testType = testArgumentMap[testKey]
                 Graph.logQ.put( [logType , logLevel.DEBUG , method , "testKey = %s, testType = %s" %(testKey, testType)])
                 #ToDo: Fix Me.  We should not be using temp properties anymore
@@ -1714,7 +1714,7 @@ def testEntityPhase9(phaseName = 'testEntityPhase9', fName = "Entity_Phase9.ates
                 
             #Time for phase 2    
             #Now remove that added member.  This is why we kept track of that added member; to speed up removal
-            for mountPoint in rememberMe.keys():
+            for mountPoint in list(rememberMe.keys()):
                 api.removeEntityLink(mountPoint, entityID1)
     
             secondAddLocationCorrect = False
@@ -4714,8 +4714,8 @@ def smokeTestSet(persistence, lLevel, css, profileName, persistenceArg = None, p
         *If persistenceType is None (no persistence, then this is ignored and won't throw any InconsistentPersistenceArchitecture exceptions)
     '''
     global testImplicit
-    print(("\nStarting Graphyne Smoke Test: %s") %(persistence.__name__))
-    print(("...%s: Engine Start") %(persistence.__name__))
+    print((("\nStarting Graphyne Smoke Test: %s") %(persistence.__name__)))
+    print((("...%s: Engine Start") %(persistence.__name__)))
     
     #Only test implicit memes in the case that we are using persistence
     if persistenceType is None:
@@ -4738,16 +4738,16 @@ def smokeTestSet(persistence, lLevel, css, profileName, persistenceArg = None, p
     except Exception as e:
         print(("Graph not started.  Traceback = %s" %e))
         raise e 
-    print(("...Engine Started: %s") %persistence.__name__)
+    print((("...Engine Started: %s") %persistence.__name__))
     
     time.sleep(30.0)
-    print(("...%s: Engine Started") %(persistence.__name__))
+    print((("...%s: Engine Started") %(persistence.__name__)))
     
     #If scaleFactor > 0, then we are also testing performance
     if (scaleFactor > 0):
         print("Performance Test: ...Creating Content")
         for unusedj in range(1, scaleFactor):
-            for moduleID in Graph.templateRepository.modules.keys():
+            for moduleID in list(Graph.templateRepository.modules.keys()):
                 if moduleID != "BrokenExamples":
                     #The module BrokenExamples contaons mmemes that are deliberately malformed.  Don't beother with these
                     module = Graph.templateRepository.modules[moduleID]
@@ -4776,12 +4776,12 @@ def smokeTestSet(persistence, lLevel, css, profileName, persistenceArg = None, p
     testReport = {"resultSet" : resultSet, "validationTime" : validationTime, "persistence" : persistence.__name__, "profileName" : profileName, "entityCount" : entityCount}     
     #publishResults(resultSet, validationTime, css)
     
-    print(("...%s: Test run finished.  Waiting 30 seconds for log thread to catch up before starting shutdown") %(persistence.__name__))
+    print((("...%s: Test run finished.  Waiting 30 seconds for log thread to catch up before starting shutdown") %(persistence.__name__)))
     time.sleep(30.0)
     
-    print(("...%s: Engine Stop (%s)") %(persistence.__name__, profileName)) 
+    print((("...%s: Engine Stop (%s)") %(persistence.__name__, profileName))) 
     Graph.stopLogger()
-    print(("...%s: Engine Stopped (%s)") %(persistence.__name__, profileName))   
+    print((("...%s: Engine Stopped (%s)") %(persistence.__name__, profileName)))   
     return testReport 
 
   
@@ -4807,7 +4807,7 @@ if __name__ == "__main__":
         elif args.logl == "warning":
             pass
         else:
-            print("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl)
+            print(("Invalid log level %s!  Permitted valies of --logl are 'warning', 'info' and 'debug'!" %args.logl))
             sys.exit()
     
     persistenceType = None
@@ -4816,9 +4816,9 @@ if __name__ == "__main__":
             pass
         elif (args.dbtype == 'sqlite') or (args.dbtype == 'mssql') or (args.dbtype == 'hana'):
             persistenceType = args.dbtype
-            print("\n  -- using persistence type %s" %args.dbtype)
+            print(("\n  -- using persistence type %s" %args.dbtype))
         else:
-            print("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl)
+            print(("Invalid persistence type %s!  Permitted valies of --dbtype are 'none', 'sqlite', 'mssql' and 'hana'!" %args.logl))
             sys.exit()
             
     dbConnectionString = None
@@ -4830,7 +4830,7 @@ if __name__ == "__main__":
                 dbConnectionString = 'memory'
                 print("\n  -- Using sqlite persistence with connection = :memory:")
             else:
-                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                print(("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType))
                 sys.exit()
         elif args.dbtcon == 'memory':
             if persistenceType is None:
@@ -4840,18 +4840,18 @@ if __name__ == "__main__":
                 dbConnectionString = args.dbtcon
                 print("\n  -- Using sqlite persistence with connection = :memory:")
             else:
-                print("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType)
+                print(("\n  -- Persistence type %s requires a valid database connection.  Please provide a --dbtcon argument!" %persistenceType))
                 sys.exit()
         else:
             dbConnectionString = args.dbtcon
             if persistenceType == 'sqlite':
                 if dbConnectionString.endswith(".sqlite"):
-                    print("\n  -- Using sqlite persistence with file %s" %dbConnectionString)
+                    print(("\n  -- Using sqlite persistence with file %s" %dbConnectionString))
                 else:
-                    print("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString)
+                    print(("\n  -- Using sqlite persistence with invalid filename %s.  It must end with the .sqlite extension" %dbConnectionString))
                     sys.exit()
             else:
-                print("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon))
+                print(("\n  -- Using persistence type %s with connection = %s" %(args.dbtype, args.dbtcon)))
     
     resetDatabase = True    
     if args.resetdb:

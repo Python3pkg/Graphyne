@@ -149,7 +149,7 @@ class EntityRepository(object):
                     finally:
                         entity.entityLock.release()
                 
-                for validEntityID in validEntities.keys():
+                for validEntityID in list(validEntities.keys()):
                     if validEntities[validEntityID] == True:
                         returnEntities.append(validEntityID)
             except:
@@ -235,7 +235,7 @@ class EntityRepository(object):
                         finally:
                             entity.entityLock.release()
                     
-                    for validEntityID in validEntities.keys():
+                    for validEntityID in list(validEntities.keys()):
                         if validEntities[validEntityID] == True:
                             returnEntities.append(validEntityID)
                 except:
@@ -961,7 +961,7 @@ class LinkRepository(object):
             
             #Let's first filter to all links from 1 to 2
             allLinksFrom1To2 = []
-            for outboundLinkKey in outboundLinks.keys():
+            for outboundLinkKey in list(outboundLinks.keys()):
                 outboundLink = outboundLinks[outboundLinkKey]
                 if outboundLink.memberID2 == memberID2:
                     allLinksFrom1To2.append(olAsString)
@@ -969,7 +969,7 @@ class LinkRepository(object):
             #Now the safety check, so that we don't get a corrupt link repository            
             #Let's first filter to all links from 1 to 2
             allLinksFrom2To1 = []
-            for inboundLinkKey in inboundLinks.keys():
+            for inboundLinkKey in list(inboundLinks.keys()):
                 inboundLink = inboundLinks[inboundLinkKey]
                 if inboundLink.memberID1 == memberID1:
                     allLinksFrom2To1.append(ilAsString)
